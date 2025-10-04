@@ -5,18 +5,20 @@ Describe which project track you are choosing (adventure game, password manager,
 
 ## Project Proposal
 
-**Chosen Track:** _Replace this text with your chosen track (Choose‑Your‑Own‑Adventure, Password Manager, or Flashcard Quiz App)._ 
+**Chosen Track:** Password Manager
+(Choose‑Your‑Own‑Adventure, Password Manager, or Flashcard Quiz App)._ 
 
 ### Description
 
-Describe the program you want to build.  What problem does it solve?  How will the user interact with it?  If you’re writing a choose‑your‑own‑adventure, summarise the theme of your story.  For a password manager, explain how you will secure the data.  For a quiz app, describe the type of flashcards you will use.
+A simple CLI tool for storing and retrieving passwords using encrypted JSON files. It is a storage of all the passwords and can be retrieved if want to review/change. It let user sign in with a master password and save site password, then retrieving it whenever. To secure the data, not store the passwords in plaintext, encrypt them. 
 
 ### Planned Features
 
 - _List at least three core features you plan to implement across the upcoming ships._
-- _For example, for a password manager: registration with a master password, adding passwords, retrieving passwords._
-- _For adventure game: loading a story file, branching choices, tracking player state._
-- _For quiz app: adding flashcards, running a quiz, tracking scores._
+- secure the password by encryption
+- retrieving passwords
+- adding passwords
+- registration with a master password
 
 ### Stretch Goals
 
