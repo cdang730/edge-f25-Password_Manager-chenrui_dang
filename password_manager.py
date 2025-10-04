@@ -37,6 +37,8 @@ def register_user(username: str, master_password: str) -> None:
 
     with open(USER_DATA_FILE, "w") as f:
         json.dump(users, f, indent = 4)
+    
+    raise NotImplementedError("register_user is not yet implemented")
 
 
 def add_password(site: str, username: str, password: str) -> None:
@@ -64,6 +66,8 @@ def add_password(site: str, username: str, password: str) -> None:
 
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(passwords, f, indent=4)
+    
+    raise NotImplementedError("add_password is not yet implemented")
 
 
 def get_passwords() -> list[dict]:
