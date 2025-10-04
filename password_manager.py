@@ -6,6 +6,13 @@ password, store encrypted passwords for various sites and retrieve them.
 For now, it contains stubs that raise `NotImplementedError` and prints
 a greeting when executed.
 """
+import json
+import hashlib
+from pathlib import Path
+
+# File paths
+USER_DATA_FILE = Path("data/user_data.json")
+PASSWORDS_FILE = Path("data/passwords.json")
 
 def register_user(username: str, master_password: str) -> None:
     """Register a new user with a master password.
@@ -17,7 +24,19 @@ def register_user(username: str, master_password: str) -> None:
         username: The username for the account.
         master_password: The master password to use.
     """
-    raise NotImplementedError("register_user is not yet implemented")
+    hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
+    # load existing, else empty dict
+    if USER_DATA_FILE.exists():
+        with open(USER_DATA_FILE, "r") as f:
+            users = json.load(f)
+    else:
+        users = {}
+
+    # save or update user
+    users[username] = hashed_pw
+
+    with open(USER_DATA_FILE, "w") as f:
+        json.dump(users, f, indent = 4)
 
 
 def add_password(site: str, username: str, password: str) -> None:
@@ -31,7 +50,20 @@ def add_password(site: str, username: str, password: str) -> None:
         username: The account username for the site.
         password: The password to store.
     """
-    raise NotImplementedError("add_password is not yet implemented")
+    # Store a password for a given site.
+    entry = {"site": site, "username": username, "password": password}
+
+    # Load existing entries if file exists, else empty list
+    if PASSWORDS_FILE.exists():
+        with open(PASSWORDS_FILE, "r") as f:
+            passwords = json.load(f)
+    else:
+        passwords = []
+
+    passwords.append(entry)
+
+    with open(PASSWORDS_FILE, "w") as f:
+        json.dump(passwords, f, indent=4)
 
 
 def get_passwords() -> list[dict]:
