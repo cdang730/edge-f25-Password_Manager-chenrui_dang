@@ -76,8 +76,10 @@ def get_passwords() -> list[dict]:
     Returns:
         A list of stored passwords.
     """
-    raise NotImplementedError("get_passwords is not yet implemented")
-
+    if PASSWORDS_FILE.exists():
+        with open(PASSWORDS_FILE, "r") as f:
+            return json.load(f)
+    return []
 
 def main() -> None:
     """Entry point for the password manager.
