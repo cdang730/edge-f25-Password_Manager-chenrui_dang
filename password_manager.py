@@ -66,7 +66,7 @@ def login(username: str, master_password: str) -> bool:
         return False
 
 
-def add_password(site: str, username: str, password: str) -> None:
+def add_password(owner: str, site: str, username: str, password: str) -> None:
     """Store a password for a given site.
 
     You will encrypt the password and save it to a JSON file,
@@ -85,18 +85,22 @@ def add_password(site: str, username: str, password: str) -> None:
         with open(PASSWORDS_FILE, "r") as f:
             passwords = json.load(f)
     else:
-        passwords = []
+        passwords = {}
 
-    passwords.append(entry)
+    # create section by user name
+    if owner not in passwords:
+        passwords[owner] = []
+
+    passwords[owner].append(entry)
 
     PASSWORDS_FILE.parent.mkdir(exist_ok=True)
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(passwords, f, indent=4)
 
-    print(f"Password for -{site}- added successfully!")
+    print(f"Password for -{site}- added successfully for username -{owner}!")
 
 
-def get_passwords() -> list[dict]:
+def get_passwords(owner:str) -> list[dict]:
     """Retrieve all stored passwords.
 
     This will read from an encrypted JSON file and return a list
@@ -106,14 +110,15 @@ def get_passwords() -> list[dict]:
     Returns:
         A list of stored passwords.
     """
-    if PASSWORDS_FILE.exists():
-        with open(PASSWORDS_FILE, "r") as f:
-            return json.load(f)
-    return []
+    if not PASSWORDS_FILE.exists():
+        return []
+    with open(PASSWORDS_FILE, "r") as f:
+        passwords = json.load(f)
+    return passwords.get(owner, [])
 
-def list_password() -> None:
+def list_password(owner: str) -> None:
     """List all stored passwords. + by different username"""
-    passwords = get_passwords()
+    passwords = get_passwords(owner)
     if not passwords:
         print("No passwords stored yet.")
         return
@@ -122,9 +127,9 @@ def list_password() -> None:
         print(f"Site: {entry['site']} | Username: {entry['username']} | Password: {entry['password']}")
 
 
-def search_passwords(site_name: str) -> None:
+def search_passwords(owner: str, site_name: str) -> None:
     """Search passwords by site name."""
-    passwords = get_passwords()
+    passwords = get_passwords(owner)
     results = [p for p in passwords if site_name.lower() in p["site"].lower()]
 
     if results:
@@ -140,7 +145,7 @@ def main() -> None:
     When run directly, this prints a greeting.  You will replace this
     with registration, login and menu functionality in future ships.
     """
-    print(" 🔐 Welcome to the Password Manager!")
+    print("🔐 Welcome to the Password Manager!")
 
     while True:
         action = input("Do you want to (r)egister, (l)ogin, or (q)uit? \n")
@@ -167,14 +172,14 @@ def main() -> None:
                         site = input("Site name: ")
                         user = input("Site username: ")
                         pw = input("Site password: ")
-                        add_password(site, user, pw)
+                        add_password(username, site, user, pw)
 
                     elif choice == "2":
-                        list_password()
+                        list_password(username)
 
                     elif choice == "3":
                         search = input("Enter site name to search: ")
-                        search_passwords(search)
+                        search_passwords(username, search)
 
                     elif choice == "4":
                         print("Logging out...\nBack to homepage ... \n")
