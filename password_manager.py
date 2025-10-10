@@ -9,6 +9,8 @@ a greeting when executed.
 import json
 import hashlib
 from pathlib import Path
+import os
+
 
 # File paths
 USER_DATA_FILE = Path("data/user_data.json")
@@ -43,13 +45,14 @@ def register_user(username: str, master_password: str) -> None:
     with open(USER_DATA_FILE, "w") as f:
         json.dump(users, f, indent = 4)
 
-    
+    clear_terminal()
     print(f"User -{username}- registered succssfully!")
 
 
 def login(username: str, master_password: str) -> bool:
     """Check login credentials"""
     if not USER_DATA_FILE.exists():
+        clear_terminal()
         print("No users found. Please register.")
         return False
     
@@ -59,9 +62,11 @@ def login(username: str, master_password: str) -> bool:
     hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
 
     if username in users and users[username] == hashed_pw:
-        print("Login successful!")
+        clear_terminal()
+        print("Login successful!")    
         return True
     else:
+        clear_terminal()
         print("Invalid user name or password. Please try again.")
         return False
 
@@ -97,6 +102,7 @@ def add_password(owner: str, site: str, username: str, password: str) -> None:
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(passwords, f, indent=4)
 
+    clear_terminal()
     print(f"Password for -{site}- added successfully for username -{owner}!")
 
 
@@ -120,10 +126,12 @@ def list_password(owner: str) -> None:
     """List all stored passwords. + by different username"""
     passwords = get_passwords(owner)
     if not passwords:
+        clear_terminal()
         print("No passwords stored yet.")
         return
     
     for entry in passwords:
+        clear_terminal()
         print(f"Site: {entry['site']} | Username: {entry['username']} | Password: {entry['password']}")
 
 
@@ -134,10 +142,15 @@ def search_passwords(owner: str, site_name: str) -> None:
 
     if results:
         for entry in results:
+            clear_terminal()
             print(f"Site: {entry['site']} | Username: {entry['username']} | Password: {entry['password']}")
     else:
+        clear_terminal()
         print(f"No passwords found for -{site_name}-.")
 
+def clear_terminal() -> None:
+    """Clear the terminal"""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def main() -> None:
     """Entry point for the password manager.
@@ -182,6 +195,7 @@ def main() -> None:
                         search_passwords(username, search)
 
                     elif choice == "4":
+                        clear_terminal()
                         print("Logging out...\nBack to homepage ... \n")
                         break
                     else:
