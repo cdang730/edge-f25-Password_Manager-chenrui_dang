@@ -33,10 +33,18 @@ def register_user(username: str, master_password: str) -> None:
         users = {}
 
     # save or update user
+    if username in users:
+        print("Username exists")
+        return
+
     users[username] = hashed_pw
 
+    USER_DATA_FILE.parent.mkdir(exist_ok=True)
     with open(USER_DATA_FILE, "w") as f:
         json.dump(users, f, indent = 4)
+
+    
+    print(f"User -{username}- registered succssfully!")
 
 
 def add_password(site: str, username: str, password: str) -> None:
