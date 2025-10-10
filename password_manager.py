@@ -47,6 +47,25 @@ def register_user(username: str, master_password: str) -> None:
     print(f"User -{username}- registered succssfully!")
 
 
+def login(username: str, master_password: str) -> bool:
+    """Check login credentials"""
+    if not USER_DATA_FILE.exists():
+        print("No users found. Please register.")
+        return False
+    
+    with open(USER_DATA_FILE, "r") as f:
+        users = json.load(f)
+
+    hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
+
+    if username in users and users[username] == hashed_pw:
+        print("Login successful!")
+        return True
+    else:
+        print("Invalid user name or password. Please try again.")
+        return False
+
+
 def add_password(site: str, username: str, password: str) -> None:
     """Store a password for a given site.
 
@@ -70,27 +89,11 @@ def add_password(site: str, username: str, password: str) -> None:
 
     passwords.append(entry)
 
+    PASSWORDS_FILE.parent.mkdir(exist_ok=True)
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(passwords, f, indent=4)
 
-
-def login(username: str, master_password: str) -> bool:
-    """Check login credentials"""
-    if not USER_DATA_FILE.exists():
-        print("No users found. Please register.")
-        return False
-    
-    with open(USER_DATA_FILE, "r") as f:
-        users = json.load(f)
-
-    hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
-
-    if username in users and users[username] == hased_pw:
-        print("Login successful!")
-        return True
-    else:
-        print("Invalid user name or password. Please try again.")
-        return False
+    print(f"Password for -{site}- added successfully!")
 
 
 def get_passwords() -> list[dict]:
@@ -108,13 +111,83 @@ def get_passwords() -> list[dict]:
             return json.load(f)
     return []
 
+def list_password() -> None:
+    """List all stored passwords. + by different username"""
+    passwords = get_passwords()
+    if not passwords:
+        print("No passwords stored yet.")
+        return
+    
+    for entry in passwords:
+        print(f"Site: {entry['site']} | Username: {entry['username']} | Password: {entry['password']}")
+
+
+def search_passwords(site_name: str) -> None:
+    """Search passwords by site name."""
+    passwords = get_passwords()
+    results = [p for p in passwords if site_name.lower() in p["site"].lower()]
+
+    if results:
+        for entry in results:
+            print(f"Site: {entry['site']} | Username: {entry['username']} | Password: {entry['password']}")
+    else:
+        print(f"No passwords found for -{site_name}-.")
+
+
 def main() -> None:
     """Entry point for the password manager.
 
     When run directly, this prints a greeting.  You will replace this
     with registration, login and menu functionality in future ships.
     """
-    print("Welcome to the Password Manager!")
+    print(" 🔐 Welcome to the Password Manager!")
+
+    while True:
+        action = input("Do you want to (r)egister, (l)ogin, or (q)uit? \n")
+
+        if action == "r":
+            username = input("Enter new username: ")
+            password = input("Enter master password: ")
+            register_user(username, password)
+        elif action == "l":
+            username = input("Enter username: ")
+            password = input("Enter master password: ")
+
+            if login(username, password) == True:
+                # Enter menu loop for add or get password
+                while True:
+                    print("\nMain Menu:")
+                    print("1. Add new password")
+                    print("2. List passwords")
+                    print("3. Search by site")
+                    print("4. Logout")
+                    choice = input("Choose an option by select the number: ")
+
+                    if choice == "1":
+                        site = input("Site name: ")
+                        user = input("Site username: ")
+                        pw = input("Site password: ")
+                        add_password(site, user, pw)
+
+                    elif choice == "2":
+                        list_password()
+
+                    elif choice == "3":
+                        search = input("Enter site name to search: ")
+                        search_passwords(search)
+
+                    elif choice == "4":
+                        print("Logging out...\nBack to homepage ... \n")
+                        break
+                    else:
+                        print("Invalid choice, try again.")
+        
+        elif action == "q":
+            print("Thanks for using Password Manager, Goodbye!")
+            break
+
+        else:
+            print("Invalid option. Please type r, l, or q.")
 
 
 if __name__ == "__main__":
