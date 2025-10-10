@@ -74,6 +74,25 @@ def add_password(site: str, username: str, password: str) -> None:
         json.dump(passwords, f, indent=4)
 
 
+def login(username: str, master_password: str) -> bool:
+    """Check login credentials"""
+    if not USER_DATA_FILE.exists():
+        print("No users found. Please register.")
+        return False
+    
+    with open(USER_DATA_FILE, "r") as f:
+        users = json.load(f)
+
+    hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
+
+    if username in users and users[username] == hased_pw:
+        print("Login successful!")
+        return True
+    else:
+        print("Invalid user name or password. Please try again.")
+        return False
+
+
 def get_passwords() -> list[dict]:
     """Retrieve all stored passwords.
 
