@@ -5,6 +5,7 @@ from pathlib import Path
 import os
 import time
 import shutil
+import uuid
 
 
 # File paths
@@ -29,7 +30,7 @@ def load_json(path:Path, default):
     
 def save_json_safely(path: Path, data):
     """Save data safely with temp rename + backup."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)   # ✅ FIXED LINE
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     temp_path = path.with_suffix(".tmp")
     # Backup
     if path.exists():
@@ -110,10 +111,10 @@ def add_password(owner: str, site: str, username: str, password: str, notes = ""
         
 
     entry = {
-        "id": str(int(time.time()*1000)),
+        "id": str(uuid.uuid4())[:8],
         "site": site, 
         "username": username,
-        "password": password,              # ✅ added missing password key
+        "password": password,
         "notes": notes, 
         "tags": tags, 
         "last_updated": time.ctime()
