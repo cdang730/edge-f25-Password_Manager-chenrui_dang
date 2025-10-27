@@ -1,11 +1,4 @@
-"""Simple password manager (stub).
-
-This module provides placeholder functions for a command‑line password
-manager.  Eventually it will allow users to register with a master
-password, store encrypted passwords for various sites and retrieve them.
-For now, it contains stubs that raise `NotImplementedError` and prints
-a greeting when executed.
-"""
+"""Simple password manager. Stores passwords for users and can search passwords. """
 import json
 import hashlib
 from pathlib import Path
@@ -17,15 +10,7 @@ USER_DATA_FILE = Path("data/user_data.json")
 PASSWORDS_FILE = Path("data/passwords.json")
 
 def register_user(username: str, master_password: str) -> None:
-    """Register a new user with a master password.
-
-    You will hash and store the master password in a
-    JSON file for authentication.  This stub does nothing.
-
-    Args:
-        username: The username for the account.
-        master_password: The master password to use.
-    """
+    """Register a new user with a master password."""
     hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
     # load existing, else empty dict
     if USER_DATA_FILE.exists():
@@ -72,16 +57,7 @@ def login(username: str, master_password: str) -> bool:
 
 
 def add_password(owner: str, site: str, username: str, password: str) -> None:
-    """Store a password for a given site.
-
-    You will encrypt the password and save it to a JSON file,
-    associating it with the site and username.  This stub does nothing.
-
-    Args:
-        site: The website or service name.
-        username: The account username for the site.
-        password: The password to store.
-    """
+    """Store a password for a given site."""
     # Store a password for a given site.
     entry = {"site": site, "username": username, "password": password}
 
@@ -107,15 +83,7 @@ def add_password(owner: str, site: str, username: str, password: str) -> None:
 
 
 def get_passwords(owner:str) -> list[dict]:
-    """Retrieve all stored passwords.
-
-    This will read from an encrypted JSON file and return a list
-    of dictionaries containing site, username and password.  For now
-    it raises `NotImplementedError`.
-
-    Returns:
-        A list of stored passwords.
-    """
+    """Retrieve all stored passwords."""
     if not PASSWORDS_FILE.exists():
         return []
     with open(PASSWORDS_FILE, "r") as f:
@@ -153,11 +121,7 @@ def clear_terminal() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def main() -> None:
-    """Entry point for the password manager.
-
-    When run directly, this prints a greeting.  You will replace this
-    with registration, login and menu functionality in future ships.
-    """
+    """Entry point for the password manager."""
     print("🔐 Welcome to the Password Manager!")
 
     while True:
