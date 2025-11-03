@@ -13,6 +13,7 @@ DATA_DIR = Path("data")
 USER_DATA_FILE = DATA_DIR / "user_data.json"
 PASSWORDS_FILE = DATA_DIR / "passwords.json"
 BACKUP_FILE = DATA_DIR / "passwords.bak"
+CHECK_File = DATA_DIR / "passwords_check.txt"
 VERSION = "1.0"
 
 
@@ -53,10 +54,34 @@ def register_user(username: str, master_password: str) -> None:
         print ("Username already exists.")
         return
     
-    hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
-    users[username] = hashed_pw
-    save_json_safely(USER_DATA_FILE, users)
+    while True:
+        has_special: bool = False
+        if len(master_password) == 0:
+            print("Password Cannot be empty.")
+            master_password = input("Please try again: ")
+        elif len(master_password) < 8:
+            print("Master password need to be at least 8 characters.")
+            master_password = input("Please try again: ")
+        else: 
+            special_character: list[str] = ["!", "?", "@", "#", "$", "%"]
+            i = 0
+            has_special: bool = False
+            while i < len(master_password):
+                if master_password[i] in special_character:
+                    has_special = True
+                    break
+                i += 1
 
+            if not has_special:
+                print("Must at least have one special character: !,?,@,#,$,%.")
+                master_password = input("Please try again: ")
+            else:
+                hashed_pw = hashlib.sha256(master_password.encode()).hexdigest()
+                users[username] = hashed_pw
+                break
+    
+    save_json_safely(USER_DATA_FILE, users)
+            
     clear_terminal()
     print(f"User -{username}- registered succssfully!")
 
