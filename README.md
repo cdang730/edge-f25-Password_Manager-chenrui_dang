@@ -28,23 +28,23 @@ It supports multi-user login, encrypted password storage, backups, integrity che
 - Fernet key invalid
     Wrong master password during unlocing.
 
-## Golden Path
-Start the app:
-```python -m password_manager```
-Register a user:
-    Type r in the terminal and follow the steps for username and master password.
-    Type l in the terminal to login.
-Main menu:
-    Type the corresponding number.
-    1. Add new password
-        Enter site, username, password, storing in json.
-    2. List password
-        List existing passwords
-    3. Search by site
-    4. Edit password
-    5. Delete password
-    6. Export passwords
-    7. Import passwords
-    8. Lock vault
-    9. Unlock vault
-    10. Help
+## Golden Path   
+Start the app:    
+```python -m password_manager```   
+Register a user:    
+    Type r in the terminal and follow the steps for username and master password.  
+    Type l in the terminal to login.   
+Main menu:   
+    Type the corresponding number.    
+    1. Add new password   
+        Enter site, username, password, storing in json.    
+    2. List password   
+        List existing passwords   
+    3. Search by site    
+    4. Edit password   
+    5. Delete password    
+    6. Export passwords   
+    7. Import passwords   
+    8. Lock vault   
+    9. Unlock vault   
+    10. Help    
